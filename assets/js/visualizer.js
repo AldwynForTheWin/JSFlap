@@ -52,7 +52,12 @@ $(document).ready( function(){
 			finalStates[_id] = statesPool[_id];
 			$('input[value=final]').prop('checked', true);
 			styleAsFinal(activeState);
-		}		
+		} else {
+			statesPool[_id].final = true;
+			delete finalStates[_id];
+			styleAsNormal(activeState);
+			$('input[value=final]').prop('checked', false);
+		}
 	}
 
 	function getStateFromG(id){
@@ -62,6 +67,10 @@ $(document).ready( function(){
 
 	function styleAsFinal(g) {
 		g.find('circle').attr({'stroke-width':5});
+	}
+
+	function styleAsNormal(g) {
+		g.find('circle').attr({'stroke-width':1});	
 	}
 
 	SVG.on('mousemove', function(e){
