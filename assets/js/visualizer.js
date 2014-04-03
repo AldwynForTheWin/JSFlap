@@ -12,7 +12,7 @@ var activeState = null;
 var pathEdit = null;
 var openState = null;
 
- $(document).ready( function(){
+$(document).ready( function(){
 
 	$(document).on('contextmenu', SVG, function(e){
 		// alert('Context Menu event has fired!');
@@ -211,11 +211,12 @@ var openState = null;
 
 			var alphabet = prompt('Enter alphabets (must be comma-separated):', 'a, b');
 			var elements = alphabet.split(', ');
-			for (var i = 0; i < elements.length; i++) {
-				elements[i] = elements[i];
-				// console.log();
-			}
-			console.log(elements);
+
+			// split user-input here
+			// for (var i = 0; i < elements.length; i++) {
+			// 	elements[i] = elements[i];
+			// }
+			// console.log(elements);
 			$('#'+activePath).find('text').attr({'x': textX, 'y': textY}).html('[' + alphabet + ']');
 			transitions[pathCounter]['dest'] = closeState.attr('id');
 			pathCounter++;
@@ -225,7 +226,7 @@ var openState = null;
 		}
 	});
 
-
+	// change-alphabet prompt here
 	$('#transitions').on('mousedown', 'g', function(e) {
 		pathEdit = prompt('Enter alphabets (must be comma-separated):', 'a, b');
 		$(this).find('text').html('[' + pathEdit + ']');
