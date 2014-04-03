@@ -1,8 +1,11 @@
+var startState = null;
+var finalStates = [];
 var statesPool = [];
 var transitions = [];
 var SVG = $('svg');
 var gCtxMenu = $('#gContextMenu');
 var gCtxMenuLi = $('#gContextMenu li');
+var gCtxMenuInputs = $('#gContextMenu input');
 var off_top = SVG.offset().top;
 var off_left = SVG.offset().left;
 var count = 0;
@@ -32,9 +35,19 @@ var openState = null;
 		return gCtxMenu.is(":hidden");
 	}
 
-	gCtxMenuLi.click(function(e){
-		gCtxMenu.hide();
-	});
+	// $('input[type=checkbox]').on('click', function() {
+	// 	// hideContextMenu();
+	// 	// activeState = null;
+	// });
+
+	$('input[value=final]').on('click', function(){
+		// console.log($.inArray(activeState, finalStates));
+		// finalStates.push(activeState);
+		console.log(activeState);
+
+		hideContextMenu();
+		activeState = null;
+	});	
 
 	SVG.on('mousemove', function(e){
 		var x = e.pageX - off_left;
@@ -147,6 +160,9 @@ var openState = null;
 				activePath = null;
 			}
 
+			// add to statespool
+			statesPool.push(new State('q'+count, x, y));
+			console.log(statesPool);
 			count++;
 		} else {
 			if (e.which != 3) {
@@ -214,13 +230,6 @@ var openState = null;
 	});	
 
 });
-
-
-
-
-
-
-
 
 
 function State(label, x, y) {
