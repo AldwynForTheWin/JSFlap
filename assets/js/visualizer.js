@@ -36,19 +36,28 @@ $(document).ready( function(){
 		return gCtxMenu.is(":hidden");
 	}
 
-	// $('input[type=checkbox]').on('click', function() {
-	// 	// hideContextMenu();
-	// 	// activeState = null;
-	// });
-
 	$('input[value=final]').on('click', function(){
-		// console.log($.inArray(activeState, finalStates));
-		// finalStates.push(activeState);
-		console.log(activeState);
-
+		addFinalStateFromG($(this).value);
 		hideContextMenu();
 		activeState = null;
-	});	
+		console.log('Final:');
+		console.log(finalStates);
+	});
+
+	function addFinalStateFromG(id) {
+		_id = $(activeState.attr('id', id)).attr('id');
+		if (finalStates[_id] == null) {
+			$('input[value=final]').prop('checked', false);
+			statesPool[_id].final = true;
+			finalStates[_id] = statesPool[_id];
+			$('input[value=final]').prop('checked', true);
+		}		
+	}
+
+	function getStateFromG(id){
+		_id = $(activeState.attr('id', id)).attr('id');
+		return _state = statesPool[_id];
+	}
 
 	SVG.on('mousemove', function(e){
 		var x = e.pageX - off_left;
@@ -161,11 +170,14 @@ $(document).ready( function(){
 			if (openState != null && activePath != null) {
 				$('#'+activePath).attr({'x2': x, 'y2': y});
 				transitions[activePath]['dest'] = 'q'+count;
+				
 				activePath = null;
 			}
 
-			statesPool.push(new State('q'+count, x, y));
-			console.log(statesPool);
+			statesPool['q'+count] = new State('q'+count, x, y);
+			if (Object.size(statesPool) <= 1) {
+				startState = statesPool['q'+count];
+			}
 			count++;
 		} else {
 			if (e.which != 3) {
@@ -267,3 +279,11 @@ function Transition(state, x1, y1) {
 	this.x2 = null;
 	this.y2 = null;
 }
+
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
