@@ -228,7 +228,7 @@ var openState = null;
 
 	$('#transitions').on('mousedown', 'g', function(e) {
 		pathEdit = prompt('Enter alphabets (must be comma-separated):', 'a, b');
-		$(this).find('text').html('[' + pathEdit + '']);
+		$(this).find('text').html('[' + pathEdit + ']');
 	});
 
 });
