@@ -127,7 +127,8 @@ var openState = null;
 			var x = e.pageX - off_left;
 			var y = e.pageY - off_top;
 
-			$('#states').append($(document.createElementNS('http://www.w3.org/2000/svg', 'g')).attr({'id': 'q'+count, 'x': x, 'y': y}));
+			$('#states').append($(document.createElementNS('http://www.w3.org/2000/svg', 'g'))
+				.attr({'id': 'q'+count, 'x': x, 'y': y}));
 
 			$('#q'+count).append(
 				$(document.createElementNS('http://www.w3.org/2000/svg', 'circle')).attr(
@@ -208,6 +209,7 @@ var openState = null;
 			$('#'+activePath).find('line').attr({'x2': x, 'y2': y});
 
 			var alphabet = prompt('Enter alphabets:', 'a, b');
+			var elements = alphabet.split();
 			$('#'+activePath).find('text').attr({'x': textX, 'y': textY}).html('[' + alphabet + ']');
 			transitions[pathCounter]['dest'] = closeState.attr('id');
 			pathCounter++;
