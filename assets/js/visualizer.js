@@ -1,18 +1,33 @@
+<<<<<<< HEAD
+=======
+var startState = null;
+var finalStates = [];
+>>>>>>> 3358f97b85f23040dcf61178db0790c161bc4f28
 var statesPool = [];
 var transitions = [];
 var SVG = $('svg');
 var gCtxMenu = $('#gContextMenu');
 var gCtxMenuLi = $('#gContextMenu li');
+<<<<<<< HEAD
+=======
+var gCtxMenuInputs = $('#gContextMenu input');
+>>>>>>> 3358f97b85f23040dcf61178db0790c161bc4f28
 var off_top = SVG.offset().top;
 var off_left = SVG.offset().left;
 var count = 0;
 var pathCounter = 0;
 var activePath = null;
 var activeState = null;
+<<<<<<< HEAD
 var pathEdit = null;
 var openState = null;
 
 $(document).ready( function(){
+=======
+var openState = null;
+
+ $(document).ready( function(){
+>>>>>>> 3358f97b85f23040dcf61178db0790c161bc4f28
 
 	$(document).on('contextmenu', SVG, function(e){
 		// alert('Context Menu event has fired!');
@@ -33,9 +48,19 @@ $(document).ready( function(){
 		return gCtxMenu.is(":hidden");
 	}
 
-	gCtxMenuLi.click(function(e){
-		gCtxMenu.hide();
-	});
+	// $('input[type=checkbox]').on('click', function() {
+	// 	// hideContextMenu();
+	// 	// activeState = null;
+	// });
+
+	$('input[value=final]').on('click', function(){
+		// console.log($.inArray(activeState, finalStates));
+		// finalStates.push(activeState);
+		console.log(activeState);
+
+		hideContextMenu();
+		activeState = null;
+	});	
 
 	SVG.on('mousemove', function(e){
 		var x = e.pageX - off_left;
@@ -47,25 +72,43 @@ $(document).ready( function(){
 				'y': y - activeState.find('text').height()*2
 			});
 			activeState.find('circle').attr({'cx': x, 'cy': y});
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3358f97b85f23040dcf61178db0790c161bc4f28
 			for (var i = 0; i < transitions.length; i++) {
 				var path = transitions[i];
 				var line = $('#'+path['label']);
 
 				if (path['src'] == activeState.attr('id')) {
+<<<<<<< HEAD
 					var x2 = line.find('line').attr('x2');
 					var y2 = line.find('line').attr('y2');
 					var textX = Math.abs(x2 - x)*.5 + Math.min(x2, x);
 					var textY = Math.abs(y2 - y)*.5 + Math.min(y2, y);
+=======
+					var x1 = line.find('line').attr('x1');
+					var y1 = line.find('line').attr('y1');
+					var textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
+					var textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
+>>>>>>> 3358f97b85f23040dcf61178db0790c161bc4f28
 					
 					line.find('line').attr({'x1': x, 'y1': y});
 					line.find('text').attr({'x': textX, 'y': textY});
 				} else if (path['dest'] == activeState.attr('id')) {
+<<<<<<< HEAD
 					var x1 = line.find('line').attr('x1');
 					var y1 = line.find('line').attr('y1');
 					var textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
 					var textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
 
+=======
+					var x2 = line.find('line').attr('x2');
+					var y2 = line.find('line').attr('y2');
+					var textX = Math.abs(x2 - x)*.5 + Math.min(x2, x);
+					var textY = Math.abs(y2 - y)*.5 + Math.min(y2, y);
+					
+>>>>>>> 3358f97b85f23040dcf61178db0790c161bc4f28
 					line.find('line').attr({'x2': x, 'y2': y});
 					line.find('text').attr({'x': textX, 'y': textY});
 				}
@@ -92,6 +135,7 @@ $(document).ready( function(){
 				'y': y - activeState.find('text').height() + 50
 			});
 			activeState.find('circle').attr({'cx': x, 'cy': y});
+<<<<<<< HEAD
 			for (var i = 0; i < transitions.length; i++) {
 				var path = transitions[i];
 				var line = $('#'+path['label']);
@@ -114,6 +158,29 @@ $(document).ready( function(){
 					line.find('text').attr({'x': textX, 'y': textY});
 				}
 			}
+=======
+			// for (var i = 0; i < transitions.length; i++) {
+			// 	var path = transitions[i];
+			// 	var line = $('#'+path['label']);
+			// 	if (path['src'] == activeState.attr('id')) {
+			// 		var x1 = line.find('line').attr('x1');
+			// 		var y1 = line.find('line').attr('y1');
+			// 		var textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
+			// 		var textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
+					
+			// 		line.find('line').attr({'x1': x, 'y1': y});
+			// 		line.find('text').attr({'x': textX, 'y': textY});
+			// 	} else if (path['dest'] == activeState.attr('id')) {
+			// 		var x2 = line.find('line').attr('x2');
+			// 		var y2 = line.find('line').attr('y2');
+			// 		var textX = Math.abs(x2 - x)*.5 + Math.min(x2, x);
+			// 		var textY = Math.abs(y2 - y)*.5 + Math.min(y2, y);
+					
+			// 		line.find('line').attr({'x2': x, 'y2': y});
+			// 		line.find('text').attr({'x': textX, 'y': textY});
+			// 	}
+			// }
+>>>>>>> 3358f97b85f23040dcf61178db0790c161bc4f28
 			activeState = null;
 		}
 	});
@@ -151,6 +218,12 @@ $(document).ready( function(){
 				activePath = null;
 			}
 
+<<<<<<< HEAD
+=======
+			// add to statespool
+			statesPool.push(new State('q'+count, x, y));
+			console.log(statesPool);
+>>>>>>> 3358f97b85f23040dcf61178db0790c161bc4f28
 			count++;
 		} else {
 			if (e.which != 3) {
@@ -208,6 +281,7 @@ $(document).ready( function(){
 
 			closeState = $(this);
 			$('#'+activePath).find('line').attr({'x2': x, 'y2': y});
+<<<<<<< HEAD
 
 			var alphabet = prompt('Enter alphabets (must be comma-separated):', 'a, b');
 			var elements = alphabet.split(', ');
@@ -218,6 +292,9 @@ $(document).ready( function(){
 			// }
 			// console.log(elements);
 			$('#'+activePath).find('text').attr({'x': textX, 'y': textY}).html('[' + alphabet + ']');
+=======
+			$('#'+activePath).find('text').attr({'x': textX, 'y': textY});
+>>>>>>> 3358f97b85f23040dcf61178db0790c161bc4f28
 			transitions[pathCounter]['dest'] = closeState.attr('id');
 			pathCounter++;
 			activePath = null;
@@ -233,13 +310,6 @@ $(document).ready( function(){
 	});
 
 });
-
-
-
-
-
-
-
 
 
 function State(label, x, y) {
