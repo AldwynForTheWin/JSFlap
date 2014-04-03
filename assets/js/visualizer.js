@@ -1,7 +1,7 @@
-$(document).ready( function(){
+ $(document).ready( function(){
 
 	statesPool = [];
-	transitions = [];
+	transitions = {};
 	SVG = $('svg');
 	gCtxMenu = $('#gContextMenu');
 	gCtxMenuLi = $('#gContextMenu li');
@@ -39,26 +39,45 @@ $(document).ready( function(){
 	});
 
 	SVG.on('mousemove', function(e){
+		x = e.pageX - off_left;
+		y = e.pageY - off_top;
+		
 		if (activeState != null && e.which != 3 && contextMenuHidden()) {
-			x = e.pageX - off_left;
-			y = e.pageY - off_top;
 			activeState.find('text').attr({
 				'x': x - activeState.find('text').width()/2,
 				'y': y - activeState.find('text').height()*2
 			});
 			activeState.find('circle').attr({'cx': x, 'cy': y});
+			for (path in transitions) {
+				console.log(path);
+				if (path['src'] == activeState.attr('id')) {
+					x1 = $('#'+path['src']).find('line').attr('x1');
+					y1 = $('#'+path['src']).find('line').attr('y1');
+					textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
+					textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
+					
+					$('#'+path['src']).find('line').attr({'x1': x, 'y1': y});
+					$('#'+path['src']).find('text').attr({'x': textX, 'y': textY});
+				} else if (path['dest'] == activeState.attr('id')) {
+					x2 = $('#'+path['dest']).find('line').attr('x2');
+					y2 = $('#'+path['dest']).find('line').attr('y2');
+					textX = Math.abs(x2 - x)*.5 + Math.min(x2, x);
+					textY = Math.abs(y2 - y)*.5 + Math.min(y2, y);
+					
+					$('#'+path['dest']).find('line').attr({'x2': x, 'y2': y});
+					$('#'+path['dest']).find('text').attr({'x': textX, 'y': textY});
+				}
+			}
 		}
 
 		if (openState != null  && e.which != 3) {
-			x = e.pageX - off_left;
-			y = e.pageY - off_top;
 			x1 = $('#'+activePath).find('line').attr('x1');
 			y1 = $('#'+activePath).find('line').attr('y1');
 			textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
 			textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
 				
 			$('#'+activePath).find('line').attr({'x2': x, 'y2': y});
-			$('#'+activePath).find('text').attr({'x': textX, 'y': textY});			
+			$('#'+activePath).find('text').attr({'x': textX, 'y': textY});
 		}
 	});
 
@@ -101,8 +120,9 @@ $(document).ready( function(){
 			textHeight = $('#q'+count+' text').height()/4;
 			$('#q'+count+' text').attr({'x': x - textWidth, 'y': y + textHeight});
 
-			if (activePath != null) {
+			if (openState != null && activePath != null) {
 				$('#'+activePath).attr({'x2': x, 'y2': y});
+				transitions[activePath]['dest'] = 'q'+count;
 				activePath = null;
 			}
 
@@ -118,7 +138,9 @@ $(document).ready( function(){
 	});
 
 	$('#states').on('mousedown', 'g', function(e){
-		activeState = $(this);
+		if (activeState == null) {
+			activeState = $(this);
+		}
 		if (e.which == 3) {
 			showContextMenu(e);
 		} else {
@@ -126,8 +148,8 @@ $(document).ready( function(){
 		}
 	});
 
-	$('#states').on('mouseup', 'g',  function(e){
-		if (activeState != null && e.which != 3) {
+	$('#states').on('dblclick', 'g',  function(e){
+		if (activeState == null && openState == null && activePath == null && e.which != 3) {
 			x = e.pageX - off_left;
 			y = e.pageY - off_top;
 			x1 = $('#'+activePath).find('line').attr('x1');
@@ -135,31 +157,35 @@ $(document).ready( function(){
 			textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
 			textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
 
-			if (openState == null) {
-				openState = $(this);
-				activePath = 'path' + pathCounter;
-				$('#transitions').append($(document.createElementNS('http://www.w3.org/2000/svg', 'g')).attr({'id': activePath}));
-				$('#'+activePath).append(
-					$(document.createElementNS('http://www.w3.org/2000/svg', 'line')).attr(
-						{'x1': x, 'y1': y, 'x2': x, 'y2': y, 'stroke': 'red', 'stroke-width': 2}
-					)
-				).append(
-					$(document.createElementNS('http://www.w3.org/2000/svg', 'text')).attr(
-						{'x': textX, 'y': textY, 'stroke': 'blue'}
-					).html('[a, b, ~]')
-				);
-			} else {
-				closeState = $(this);
-				$('#'+activePath).find('line').attr({'x2': x, 'y2': y});
-				$('#'+activePath).find('text').attr({'x': textX, 'y': textY});
-				pathCounter++;
-				activePath = null;
-				openState = null;
-				closeState = null;
-			}
-			console.log(openState + ' : ' + activeState + ' : ' + activePath);
+			openState = $(this);
+			activePath = 'path' + pathCounter;
+			$('#transitions').append($(document.createElementNS('http://www.w3.org/2000/svg', 'g')).attr({'id': activePath}));
+			$('#'+activePath).append(
+				$(document.createElementNS('http://www.w3.org/2000/svg', 'line')).attr(
+					{'x1': x, 'y1': y, 'x2': x, 'y2': y, 'stroke': 'red', 'stroke-width': 2}
+				)
+			).append(
+				$(document.createElementNS('http://www.w3.org/2000/svg', 'text')).attr(
+					{'x': textX, 'y': textY, 'stroke': 'blue'}
+				).html('[a, b, ~]')
+			);
+			transitions[activePath] = {src: openState.attr('id'), dest: null};
+			console.log(openState.attr('id'));
 		}
 	});
+
+	$('#states').on('mouseup', 'g',  function(e){
+		if (openState != null && activePath != null) {
+			closeState = $(this);
+			$('#'+activePath).find('line').attr({'x2': x, 'y2': y});
+			$('#'+activePath).find('text').attr({'x': textX, 'y': textY});
+			transitions[activePath]['dest'] = closeState.attr('id');
+			pathCounter++;
+			activePath = null;
+			openState = null;
+			closeState = null;
+		}
+	});	
 
 });
 
