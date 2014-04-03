@@ -41,7 +41,7 @@ $(document).ready( function(){
 		hideContextMenu();
 		activeState = null;
 		console.log('Final:');
-		console.log(finalStates);
+		console.log(finalStates);		
 	});
 
 	function addFinalStateFromG(id) {
@@ -51,12 +51,17 @@ $(document).ready( function(){
 			statesPool[_id].final = true;
 			finalStates[_id] = statesPool[_id];
 			$('input[value=final]').prop('checked', true);
+			styleAsFinal(activeState);
 		}		
 	}
 
 	function getStateFromG(id){
 		_id = $(activeState.attr('id', id)).attr('id');
 		return _state = statesPool[_id];
+	}
+
+	function styleAsFinal(g) {
+		g.find('circle').attr({'stroke-width':5});
 	}
 
 	SVG.on('mousemove', function(e){
@@ -149,13 +154,14 @@ $(document).ready( function(){
 			}
 			var x = e.pageX - off_left;
 			var y = e.pageY - off_top;
+			var r = 30;
 
 			$('#states').append($(document.createElementNS('http://www.w3.org/2000/svg', 'g'))
 				.attr({'id': 'q'+count, 'x': x, 'y': y}));
 
 			$('#q'+count).append(
 				$(document.createElementNS('http://www.w3.org/2000/svg', 'circle')).attr(
-					{'cx': x, 'cy': y, 'r': 30, 'stroke': 'black', 'stroke-width': 1, 'fill': 'white'}
+					{'cx': x, 'cy': y, 'r': r, 'stroke': 'black', 'stroke-width': 1, 'fill': 'white'}
 				)
 			).append(
 				$(document.createElementNS('http://www.w3.org/2000/svg', 'text')).attr(
@@ -170,13 +176,18 @@ $(document).ready( function(){
 			if (openState != null && activePath != null) {
 				$('#'+activePath).attr({'x2': x, 'y2': y});
 				transitions[activePath]['dest'] = 'q'+count;
-				
+
 				activePath = null;
 			}
 
 			statesPool['q'+count] = new State('q'+count, x, y);
 			if (Object.size(statesPool) <= 1) {
 				startState = statesPool['q'+count];
+				$('#q'+count).prepend(
+					$(document.createElementNS('http://www.w3.org/2000/svg', 'text')).attr(
+					{'x': x-r*2, 'y': y+(r/3), 'stroke': 'black', 'fill': 'black'}
+					).html('&#9658;')
+				);
 			}
 			count++;
 		} else {
