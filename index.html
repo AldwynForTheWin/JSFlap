@@ -8,15 +8,15 @@
       border: 1px solid black;
       z-index: 0;
     }
-    g {
+    #states g {
       cursor: move;
       transition: all 0.5s ease;
     }
-    g:hover circle, g:hover text {
+    #states g:hover circle, #states g:hover text {
       stroke-width: 3;
       fill: yellow;
     }
-    g:active {
+    #states g:active {
       fill: green;
     }
     text {
@@ -27,11 +27,15 @@
     circle:active {
       text-shadow: 0 0 3px;
     }
+    #transitions text {
+      font: 1em normal Arial;
+    }
     .menu {
       position: fixed;
       top: 0;
       left: 0;
       background-color: rgba(255,255,255,0.4);
+      transition: all 0.5s ease;
       box-shadow: 0 0 3px #333;
       z-index: 1;
     }
@@ -49,7 +53,9 @@
 <body>
   <svg width="100%" height="600">
     <!-- <circle id="q0" cx="288" cy="172" r="10" stroke="black" stroke-width="1" fill="white"></circle> -->
-    <line x1="0" y1="0" x2="200" y2="100" style="stroke:red;stroke-width:2" value="Yes"/>
+    <!-- <line x1="0" y1="0" x2="200" y2="100" style="stroke:red;stroke-width:2" value="Yes"/> -->
+    <g id="transitions"></g>
+    <g id="states"></g>
   </svg>
   <div class="menu" id="gContextMenu">
     <ul>
@@ -57,8 +63,13 @@
       <li>Set as a final state</li>
     </ul>
   </div>
-  <div>x:<span id="x"></span></div>
-  <div>y:<span id="y"></span></div>
+  <div id="console">
+    <div>x:<span id="x"></span></div>
+    <div>y:<span id="y"></span></div>
+    <div>openState:<span id="openState"></span></div>
+    <div>activeState:<span id="activeState"></span></div>
+    <div>activePath:<span id="activePath"></span></div>
+  </div>
   <script type="text/javascript" src="assets/js/jquery.min.js"></script>
   <script type="text/javascript" src="assets/js/visualizer.js"></script>
   <script>
@@ -66,6 +77,9 @@
     $(document).mousemove(function(e) {
       $('#x').html(e.pageX);
       $('#y').html(e.pageY);
+      $('#openState').html(openState != null ? 'on' : 'off');
+      $('#activeState').html(activeState != null ? 'on' : 'off');
+      $('#activePath').html(activePath != null ? 'on' : 'off');
     });
   </script>
 </body>
