@@ -9,6 +9,7 @@ var count = 0;
 var pathCounter = 0;
 var activePath = null;
 var activeState = null;
+var pathEdit = null;
 var openState = null;
 
  $(document).ready( function(){
@@ -118,7 +119,7 @@ var openState = null;
 	});
 
 	SVG.on('mousedown', function(e){		
-		if (activeState == null) {
+		if (activeState == null && pathEdit == null) {
 			if (e.which != 3) {
 				hideContextMenu();
 			} else {
@@ -208,8 +209,13 @@ var openState = null;
 			closeState = $(this);
 			$('#'+activePath).find('line').attr({'x2': x, 'y2': y});
 
-			var alphabet = prompt('Enter alphabets:', 'a, b');
-			var elements = alphabet.split();
+			var alphabet = prompt('Enter alphabets (must be comma-separated):', 'a, b');
+			var elements = alphabet.split(', ');
+			for (var i = 0; i < elements.length; i++) {
+				elements[i] = elements[i];
+				// console.log();
+			}
+			console.log(elements);
 			$('#'+activePath).find('text').attr({'x': textX, 'y': textY}).html('[' + alphabet + ']');
 			transitions[pathCounter]['dest'] = closeState.attr('id');
 			pathCounter++;
@@ -217,7 +223,13 @@ var openState = null;
 			openState = null;
 			closeState = null;
 		}
-	});	
+	});
+
+
+	$('#transitions').on('mousedown', 'g', function(e) {
+		pathEdit = prompt('Enter alphabets (must be comma-separated):', 'a, b');
+		$(this).find('text').html('[' + pathEdit + '']);
+	});
 
 });
 
