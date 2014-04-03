@@ -46,24 +46,25 @@ var openState = null;
 				'y': y - activeState.find('text').height()*2
 			});
 			activeState.find('circle').attr({'cx': x, 'cy': y});
+
 			for (var i = 0; i < transitions.length; i++) {
 				var path = transitions[i];
 				var line = $('#'+path['label']);
 
 				if (path['src'] == activeState.attr('id')) {
-					var x1 = line.find('line').attr('x1');
-					var y1 = line.find('line').attr('y1');
-					var textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
-					var textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
-					
-					line.find('line').attr({'x1': x, 'y1': y});
-					line.find('text').attr({'x': textX, 'y': textY});
-				} else if (path['dest'] == activeState.attr('id')) {
 					var x2 = line.find('line').attr('x2');
 					var y2 = line.find('line').attr('y2');
 					var textX = Math.abs(x2 - x)*.5 + Math.min(x2, x);
 					var textY = Math.abs(y2 - y)*.5 + Math.min(y2, y);
 					
+					line.find('line').attr({'x1': x, 'y1': y});
+					line.find('text').attr({'x': textX, 'y': textY});
+				} else if (path['dest'] == activeState.attr('id')) {
+					var x1 = line.find('line').attr('x1');
+					var y1 = line.find('line').attr('y1');
+					var textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
+					var textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
+
 					line.find('line').attr({'x2': x, 'y2': y});
 					line.find('text').attr({'x': textX, 'y': textY});
 				}
@@ -90,27 +91,28 @@ var openState = null;
 				'y': y - activeState.find('text').height() + 50
 			});
 			activeState.find('circle').attr({'cx': x, 'cy': y});
-			// for (var i = 0; i < transitions.length; i++) {
-			// 	var path = transitions[i];
-			// 	var line = $('#'+path['label']);
-			// 	if (path['src'] == activeState.attr('id')) {
-			// 		var x1 = line.find('line').attr('x1');
-			// 		var y1 = line.find('line').attr('y1');
-			// 		var textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
-			// 		var textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
+			for (var i = 0; i < transitions.length; i++) {
+				var path = transitions[i];
+				var line = $('#'+path['label']);
+
+				if (path['src'] == activeState.attr('id')) {
+					var x2 = line.find('line').attr('x2');
+					var y2 = line.find('line').attr('y2');
+					var textX = Math.abs(x2 - x)*.5 + Math.min(x2, x);
+					var textY = Math.abs(y2 - y)*.5 + Math.min(y2, y);
 					
-			// 		line.find('line').attr({'x1': x, 'y1': y});
-			// 		line.find('text').attr({'x': textX, 'y': textY});
-			// 	} else if (path['dest'] == activeState.attr('id')) {
-			// 		var x2 = line.find('line').attr('x2');
-			// 		var y2 = line.find('line').attr('y2');
-			// 		var textX = Math.abs(x2 - x)*.5 + Math.min(x2, x);
-			// 		var textY = Math.abs(y2 - y)*.5 + Math.min(y2, y);
-					
-			// 		line.find('line').attr({'x2': x, 'y2': y});
-			// 		line.find('text').attr({'x': textX, 'y': textY});
-			// 	}
-			// }
+					line.find('line').attr({'x1': x, 'y1': y});
+					line.find('text').attr({'x': textX, 'y': textY});
+				} else if (path['dest'] == activeState.attr('id')) {
+					var x1 = line.find('line').attr('x1');
+					var y1 = line.find('line').attr('y1');
+					var textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
+					var textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
+
+					line.find('line').attr({'x2': x, 'y2': y});
+					line.find('text').attr({'x': textX, 'y': textY});
+				}
+			}
 			activeState = null;
 		}
 	});
@@ -187,7 +189,7 @@ var openState = null;
 			).append(
 				$(document.createElementNS('http://www.w3.org/2000/svg', 'text')).attr(
 					{'x': textX, 'y': textY, 'stroke': 'blue'}
-				).html('[a, b, ~]')
+				).html('[insert alphabet here]')
 			);
 			transitions.push({label: activePath, src: openState.attr('id'), dest: null});
 		}
@@ -204,7 +206,9 @@ var openState = null;
 
 			closeState = $(this);
 			$('#'+activePath).find('line').attr({'x2': x, 'y2': y});
-			$('#'+activePath).find('text').attr({'x': textX, 'y': textY});
+
+			var alphabet = prompt('Enter alphabets:', 'a, b');
+			$('#'+activePath).find('text').attr({'x': textX, 'y': textY}).html('[' + alphabet + ']');
 			transitions[pathCounter]['dest'] = closeState.attr('id');
 			pathCounter++;
 			activePath = null;
