@@ -1,19 +1,17 @@
- $(document).ready( function(){
+var statesPool = [];
+var transitions = [];
+var SVG = $('svg');
+var gCtxMenu = $('#gContextMenu');
+var gCtxMenuLi = $('#gContextMenu li');
+var off_top = SVG.offset().top;
+var off_left = SVG.offset().left;
+var count = 0;
+var pathCounter = 0;
+var activePath = null;
+var activeState = null;
+var openState = null;
 
-	statesPool = [];
-	transitions = {};
-	SVG = $('svg');
-	gCtxMenu = $('#gContextMenu');
-	gCtxMenuLi = $('#gContextMenu li');
-	off_top = SVG.offset().top;
-	off_left = SVG.offset().left;
-	x = 0;
-	y = 0;
-	count = 0;
-	pathCounter = 0;
-	activePath = null;
-	activeState = null;
-	openState = null;
+ $(document).ready( function(){
 
 	$(document).on('contextmenu', SVG, function(e){
 		// alert('Context Menu event has fired!');
@@ -39,8 +37,8 @@
 	});
 
 	SVG.on('mousemove', function(e){
-		x = e.pageX - off_left;
-		y = e.pageY - off_top;
+		var x = e.pageX - off_left;
+		var y = e.pageY - off_top;
 		
 		if (activeState != null && e.which != 3 && contextMenuHidden()) {
 			activeState.find('text').attr({
@@ -48,33 +46,35 @@
 				'y': y - activeState.find('text').height()*2
 			});
 			activeState.find('circle').attr({'cx': x, 'cy': y});
-			for (path in transitions) {
-				console.log(path);
+			for (var i = 0; i < transitions.length; i++) {
+				var path = transitions[i];
+				var line = $('#'+path['label']);
+
 				if (path['src'] == activeState.attr('id')) {
-					x1 = $('#'+path['src']).find('line').attr('x1');
-					y1 = $('#'+path['src']).find('line').attr('y1');
-					textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
-					textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
+					var x1 = line.find('line').attr('x1');
+					var y1 = line.find('line').attr('y1');
+					var textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
+					var textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
 					
-					$('#'+path['src']).find('line').attr({'x1': x, 'y1': y});
-					$('#'+path['src']).find('text').attr({'x': textX, 'y': textY});
+					line.find('line').attr({'x1': x, 'y1': y});
+					line.find('text').attr({'x': textX, 'y': textY});
 				} else if (path['dest'] == activeState.attr('id')) {
-					x2 = $('#'+path['dest']).find('line').attr('x2');
-					y2 = $('#'+path['dest']).find('line').attr('y2');
-					textX = Math.abs(x2 - x)*.5 + Math.min(x2, x);
-					textY = Math.abs(y2 - y)*.5 + Math.min(y2, y);
+					var x2 = line.find('line').attr('x2');
+					var y2 = line.find('line').attr('y2');
+					var textX = Math.abs(x2 - x)*.5 + Math.min(x2, x);
+					var textY = Math.abs(y2 - y)*.5 + Math.min(y2, y);
 					
-					$('#'+path['dest']).find('line').attr({'x2': x, 'y2': y});
-					$('#'+path['dest']).find('text').attr({'x': textX, 'y': textY});
+					line.find('line').attr({'x2': x, 'y2': y});
+					line.find('text').attr({'x': textX, 'y': textY});
 				}
 			}
 		}
 
 		if (openState != null  && e.which != 3) {
-			x1 = $('#'+activePath).find('line').attr('x1');
-			y1 = $('#'+activePath).find('line').attr('y1');
-			textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
-			textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
+			var x1 = $('#'+activePath).find('line').attr('x1');
+			var y1 = $('#'+activePath).find('line').attr('y1');
+			var textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
+			var textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
 				
 			$('#'+activePath).find('line').attr({'x2': x, 'y2': y});
 			$('#'+activePath).find('text').attr({'x': textX, 'y': textY});
@@ -83,13 +83,34 @@
 
 	SVG.on('mouseup', function(e){
 		if (activeState != null && e.which != 3) {
-			x = e.pageX - off_left;
-			y = e.pageY - off_top;
+			var x = e.pageX - off_left;
+			var y = e.pageY - off_top;
 			activeState.find('text').attr({
 				'x': x - activeState.find('text').width()/2,
 				'y': y - activeState.find('text').height() + 50
 			});
 			activeState.find('circle').attr({'cx': x, 'cy': y});
+			// for (var i = 0; i < transitions.length; i++) {
+			// 	var path = transitions[i];
+			// 	var line = $('#'+path['label']);
+			// 	if (path['src'] == activeState.attr('id')) {
+			// 		var x1 = line.find('line').attr('x1');
+			// 		var y1 = line.find('line').attr('y1');
+			// 		var textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
+			// 		var textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
+					
+			// 		line.find('line').attr({'x1': x, 'y1': y});
+			// 		line.find('text').attr({'x': textX, 'y': textY});
+			// 	} else if (path['dest'] == activeState.attr('id')) {
+			// 		var x2 = line.find('line').attr('x2');
+			// 		var y2 = line.find('line').attr('y2');
+			// 		var textX = Math.abs(x2 - x)*.5 + Math.min(x2, x);
+			// 		var textY = Math.abs(y2 - y)*.5 + Math.min(y2, y);
+					
+			// 		line.find('line').attr({'x2': x, 'y2': y});
+			// 		line.find('text').attr({'x': textX, 'y': textY});
+			// 	}
+			// }
 			activeState = null;
 		}
 	});
@@ -101,8 +122,8 @@
 			} else {
 				return;
 			}
-			x = e.pageX - off_left;
-			y = e.pageY - off_top;
+			var x = e.pageX - off_left;
+			var y = e.pageY - off_top;
 
 			$('#states').append($(document.createElementNS('http://www.w3.org/2000/svg', 'g')).attr({'id': 'q'+count, 'x': x, 'y': y}));
 
@@ -116,8 +137,8 @@
 				).html('Q'+count)
 			);
 
-			textWidth = $('#q'+count+' text').width()/2;
-			textHeight = $('#q'+count+' text').height()/4;
+			var textWidth = $('#q'+count+' text').width()/2;
+			var textHeight = $('#q'+count+' text').height()/4;
 			$('#q'+count+' text').attr({'x': x - textWidth, 'y': y + textHeight});
 
 			if (openState != null && activePath != null) {
@@ -126,7 +147,6 @@
 				activePath = null;
 			}
 
-			// statesPool.push(new State('q'+count, x, y));
 			count++;
 		} else {
 			if (e.which != 3) {
@@ -150,12 +170,12 @@
 
 	$('#states').on('dblclick', 'g',  function(e){
 		if (activeState == null && openState == null && activePath == null && e.which != 3) {
-			x = e.pageX - off_left;
-			y = e.pageY - off_top;
-			x1 = $('#'+activePath).find('line').attr('x1');
-			y1 = $('#'+activePath).find('line').attr('y1');
-			textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
-			textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
+			var x = e.pageX - off_left;
+			var y = e.pageY - off_top;
+			var x1 = $('#'+activePath).find('line').attr('x1');
+			var y1 = $('#'+activePath).find('line').attr('y1');
+			var textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
+			var textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
 
 			openState = $(this);
 			activePath = 'path' + pathCounter;
@@ -169,17 +189,23 @@
 					{'x': textX, 'y': textY, 'stroke': 'blue'}
 				).html('[a, b, ~]')
 			);
-			transitions[activePath] = {src: openState.attr('id'), dest: null};
-			console.log(openState.attr('id'));
+			transitions.push({label: activePath, src: openState.attr('id'), dest: null});
 		}
 	});
 
 	$('#states').on('mouseup', 'g',  function(e){
 		if (openState != null && activePath != null) {
+			var x = e.pageX - off_left;
+			var y = e.pageY - off_top;
+			var x1 = $('#'+activePath).find('line').attr('x1');
+			var y1 = $('#'+activePath).find('line').attr('y1');
+			var textX = Math.abs(x1 - x)*.5 + Math.min(x1, x);
+			var textY = Math.abs(y1 - y)*.5 + Math.min(y1, y);
+
 			closeState = $(this);
 			$('#'+activePath).find('line').attr({'x2': x, 'y2': y});
 			$('#'+activePath).find('text').attr({'x': textX, 'y': textY});
-			transitions[activePath]['dest'] = closeState.attr('id');
+			transitions[pathCounter]['dest'] = closeState.attr('id');
 			pathCounter++;
 			activePath = null;
 			openState = null;
